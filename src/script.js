@@ -66,16 +66,8 @@ cube.rotation.x = 0.2;
 cube.rotation.y = 1;
 cube.rotation.z = -1;
 
-const axisHelper = new THREE.AxesHelper();
-scene.add(axisHelper);
-
 const aspectRatio = sizes.width / sizes.height;
-const camera = new THREE.PerspectiveCamera(
-	45,
-	sizes.width / sizes.height,
-	0.1,
-	100
-);
+const camera = new THREE.PerspectiveCamera(45, aspectRatio, 0.1, 100);
 
 camera.position.z = 3;
 camera.position.y = 0.3;

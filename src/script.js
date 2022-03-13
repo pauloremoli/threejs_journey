@@ -1,5 +1,6 @@
 import "./style.css";
 import * as THREE from "three";
+import gsap from "gsap";
 const canvas = document.querySelector(".webgl");
 
 const scene = new THREE.Scene();
@@ -24,15 +25,7 @@ cube1.rotation.x = 0.2;
 cube1.rotation.y = 1;
 cube1.rotation.z = -1;
 
-const cube2 = new THREE.Mesh(
-	new THREE.BoxGeometry(1, 1, 1),
-	new THREE.MeshBasicMaterial({ color: "red" })
-);
-
-cube2.position.z = -3;
-cube2.position.x = -1;
-
-group.add(cube2);
+scene.add(cube1);
 
 const axisHelper = new THREE.AxisHelper();
 scene.add(axisHelper);
@@ -53,3 +46,16 @@ scene.add(camera);
 const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.setSize(sizes.width, sizes.height);
 renderer.render(scene, camera);
+
+gsap.to(cube1.rotation, { duration: 1, delay: 1, x: 2 });
+gsap.to(cube1.rotation, { duration: 1, delay: 2, x: 0 });
+
+const clock = new THREE.Clock();
+
+const tick = () => {
+	camera.lookAt(cube1.position);
+	renderer.render(scene, camera);
+	window.requestAnimationFrame(tick);
+};
+
+tick();

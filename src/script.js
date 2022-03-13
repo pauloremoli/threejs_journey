@@ -1,6 +1,8 @@
 import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import * as dat from "dat.gui";
+import gsap from "gsap";
 
 const canvas = document.querySelector(".webgl");
 
@@ -44,12 +46,27 @@ window.addEventListener("mousemove", (event) => {
 	cursor.y = -(event.clientY / sizes.height - 0.5);
 });
 
+//Debug UI
+const gui = new dat.GUI();
+const parameters = {
+	color: 0xff0000,
+	spin: () => {
+		gsap.to(cube.rotation, { duration: 1, y: cube.rotation.y + 10 });
+	},
+};
+
+//Scene
 const scene = new THREE.Scene();
 
 const cube = new THREE.Mesh(
 	new THREE.BoxGeometry(1, 1, 1),
-	new THREE.MeshBasicMaterial({ color: 0xffff00 })
+	new THREE.MeshBasicMaterial({ color: parameters.color })
 );
+gui.add(cube.material, "wireframe");
+gui.addColor(parameters, "color").onChange(() => {
+	cube.material.color.set(parameters.color);
+});
+gui.add(parameters, "spin");
 
 scene.add(cube);
 
@@ -70,6 +87,10 @@ const camera = new THREE.PerspectiveCamera(45, aspectRatio, 0.1, 100);
 camera.position.z = 3;
 camera.position.y = 0.3;
 camera.position.x = 0.3;
+
+gui.add(camera.position, "x", -10, 10, 0.01);
+gui.add(camera.position, "y", -10, 10, 0.01);
+gui.add(camera.position, "z", -10, 10, 0.01);
 
 camera.lookAt(cube.position);
 scene.add(camera);

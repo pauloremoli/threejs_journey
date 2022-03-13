@@ -49,22 +49,31 @@ const scene = new THREE.Scene();
 const group = new THREE.Group();
 scene.add(group);
 
-const cube = new THREE.Mesh(
-	new THREE.BoxGeometry(1, 1, 1),
-	new THREE.MeshBasicMaterial({ color: 0xffff00 })
-);
-group.add(cube);
+const count = 50;
+const positionArray = new Float32Array(count * 3 * 3);
+for (let i = 0; i < positionArray.length; i++) {
+	positionArray[i] = Math.random() - 0.5;
+}
+const positionAttribute = new THREE.BufferAttribute(positionArray, 3);
+const triangleGeometry = new THREE.BufferGeometry();
+triangleGeometry.setAttribute("position", positionAttribute);
 
-cube.position.x = 0;
-cube.position.y = 0;
-cube.position.z = 0;
+const mesh = new THREE.Mesh(
+	triangleGeometry,
+	new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true })
+);
+group.add(mesh);
+
+mesh.position.x = 0;
+mesh.position.y = 0;
+mesh.position.z = 0;
 
 // force the order to apply the rotation
-cube.rotation.reorder("YXZ");
+mesh.rotation.reorder("YXZ");
 
-cube.rotation.x = 0.2;
-cube.rotation.y = 1;
-cube.rotation.z = -1;
+mesh.rotation.x = 0.2;
+mesh.rotation.y = 1;
+mesh.rotation.z = -1;
 
 const aspectRatio = sizes.width / sizes.height;
 const camera = new THREE.PerspectiveCamera(45, aspectRatio, 0.1, 100);
@@ -86,7 +95,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.render(scene, camera);
 
 const tick = () => {
-	camera.lookAt(cube.position);
+	camera.lookAt(group.position);
 	controls.update();
 	renderer.render(scene, camera);
 	window.requestAnimationFrame(tick);

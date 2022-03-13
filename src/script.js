@@ -58,9 +58,28 @@ const parameters = {
 //Scene
 const scene = new THREE.Scene();
 
+const loadingManager = new THREE.LoadingManager();
+loadingManager.onLoad = () => {
+	console.log("Loading complete!");
+};
+loadingManager.onProgress = (url, number, total) => {
+	console.log(
+		"Loading file: " +
+			url +
+			".\nLoaded " +
+			itemsLoaded +
+			" of " +
+			itemsTotal +
+			" files."
+	);
+};
+
+const textureLoader = new THREE.TextureLoader(loadingManager);
+const texture = textureLoader.load("./door/color.jpg");
+
 const cube = new THREE.Mesh(
 	new THREE.BoxGeometry(1, 1, 1),
-	new THREE.MeshBasicMaterial({ color: parameters.color })
+	new THREE.MeshBasicMaterial({ map: texture })
 );
 gui.add(cube.material, "wireframe");
 gui.addColor(parameters, "color").onChange(() => {

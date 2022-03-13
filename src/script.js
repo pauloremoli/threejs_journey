@@ -46,14 +46,12 @@ window.addEventListener("mousemove", (event) => {
 
 const scene = new THREE.Scene();
 
-const group = new THREE.Group();
-scene.add(group);
-
 const cube = new THREE.Mesh(
 	new THREE.BoxGeometry(1, 1, 1),
 	new THREE.MeshBasicMaterial({ color: 0xffff00 })
 );
-group.add(cube);
+
+scene.add(cube);
 
 cube.position.x = 0;
 cube.position.y = 0;
@@ -73,7 +71,7 @@ camera.position.z = 3;
 camera.position.y = 0.3;
 camera.position.x = 0.3;
 
-camera.lookAt(group.position);
+camera.lookAt(cube.position);
 scene.add(camera);
 
 const controls = new OrbitControls(camera, canvas);

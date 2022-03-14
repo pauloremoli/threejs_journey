@@ -1,6 +1,12 @@
 import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
+import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
+
+const textureLoader = new THREE.TextureLoader();
+const textureMatcap = textureLoader.load("/matcap.png");
+const fontLoader = new FontLoader();
 
 const canvas = document.querySelector(".webgl");
 
@@ -51,7 +57,7 @@ const cube = new THREE.Mesh(
 	new THREE.MeshBasicMaterial({ color: 0xffff00 })
 );
 
-scene.add(cube);
+// scene.add(cube);
 
 cube.position.x = 0;
 cube.position.y = 0;
@@ -63,6 +69,42 @@ cube.rotation.reorder("YXZ");
 cube.rotation.x = 0.2;
 cube.rotation.y = 1;
 cube.rotation.z = -1;
+
+fontLoader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
+	const textGeometry = new TextGeometry("Paulo Remoli", {
+		font,
+		size: 0.5,
+		height: 0.2,
+		bevelEnabled: true,
+		bevelSize: 0.02,
+		bevelThickness: 0.1,
+		bevelOffset: 0,
+		bevelSegments: 5,
+		curveSegments: 2,
+	});
+	const textMaterial = new THREE.MeshNormalMaterial();
+	const matecapMaterial = new THREE.MeshMatcapMaterial({
+		matcap: textureMatcap,
+	});
+	const text = new THREE.Mesh(textGeometry, textMaterial);
+	textGeometry.center();
+
+	const geometryDonut = new THREE.TorusBufferGeometry(0.3, 0.2, 20, 45);
+	for (let index = 0; index < 100; index++) {
+		const donut = new THREE.Mesh(geometryDonut, matecapMaterial);
+
+		donut.position.x = (Math.random() - 0.5) * 20;
+		donut.position.y = (Math.random() - 0.5) * 20;
+		donut.position.z = (Math.random() - 0.5) * 20;
+
+		donut.rotation.x = Math.random() * Math.PI;
+		donut.rotation.y = Math.random() * Math.PI;
+
+		scene.add(donut);
+	}
+
+	scene.add(text);
+});
 
 const aspectRatio = sizes.width / sizes.height;
 const camera = new THREE.PerspectiveCamera(45, aspectRatio, 0.1, 100);
